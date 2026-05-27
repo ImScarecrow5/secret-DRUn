@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="560" prefWidth="820" spacing="0" style="-fx-background-color: #f5f5f5;"
+      xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12"
+      fx:controller="org.example.java_lab8.HelloController">
+
+    <!-- Шапка -->
+    <HBox alignment="CENTER_LEFT" spacing="12"
+          style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-padding: 12 20;">
+        <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #222;" text="VoiceChat P2P" />
+        <Label fx:id="statusLabel" style="-fx-text-fill: #999; -fx-font-size: 12;" text="● Не запущено" />
+    </HBox>
+
+    <HBox VBox.vgrow="ALWAYS">
+        <!-- Левая панель -->
+        <VBox minWidth="230" prefWidth="230" spacing="10"
+              style="-fx-padding: 16; -fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 1 0 0;">
+
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Настройки" />
+            <TextField fx:id="nicknameField" promptText="Ник" />
+            <HBox spacing="6">
+                <TextField fx:id="tcpPortField" promptText="TCP" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="udpPortField" promptText="UDP" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <!-- Кнопка запуска - синяя -->
+            <Button fx:id="startBtn" maxWidth="Infinity" onAction="#onStart"
+                    style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 7;"
+                    text="Запустить" />
+
+            <Separator />
+
+            <!-- Удалённый сервер -->
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Удалённый сервер" />
+
+            <HBox spacing="6" alignment="CENTER_LEFT">
+                <Label style="-fx-text-fill: #666; -fx-font-size: 11;" text="IP:" />
+                <TextField fx:id="remoteServerIpField" promptText="IP сервера"
+                           style="-fx-background-radius: 3; -fx-border-radius: 3; -fx-font-size: 11;"
+                           HBox.hgrow="ALWAYS" />
+                <Button fx:id="connectRemoteBtn" onAction="#onConnectRemote"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 3; -fx-padding: 5 10;"
+                        text="Подключить" />
+            </HBox>
+
+            <HBox spacing="6" alignment="CENTER_LEFT">
+                <Label fx:id="remoteStatusLabel" style="-fx-text-fill: #999; -fx-font-size: 11;" text="○ Не подключено" />
+                <Button fx:id="registerRemoteBtn" onAction="#onRegisterRemote"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 3; -fx-padding: 5 10;"
+                        text="Зарегистрировать" disable="true" />
+            </HBox>
+
+            <HBox spacing="6" alignment="CENTER_LEFT">
+                <TextField fx:id="lookupNickField" promptText="Ник для поиска"
+                           style="-fx-background-radius: 3; -fx-border-radius: 3; -fx-font-size: 11;"
+                           HBox.hgrow="ALWAYS" />
+                <Button fx:id="lookupBtn" onAction="#onLookupRemote"
+                        style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-background-radius: 3; -fx-padding: 5 10;"
+                        text="Найти" disable="true" />
+            </HBox>
+
+            <Separator />f
+
+            <Separator />
+
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Вызов вручную" />
+            <TextField fx:id="remoteIpField" promptText="IP собеседника" />
+            <TextField fx:id="remotePortField" promptText="TCP-порт" />
+            <HBox spacing="6">
+                <!-- Кнопка звонка - зелёная -->
+                <Button fx:id="callBtn" maxWidth="Infinity" onAction="#onCall"
+                        style="-fx-background-color: #5cb85c; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 7;"
+                        text="Позвонить" HBox.hgrow="ALWAYS" />
+                <!-- Кнопка завершения - красная -->
+                <Button fx:id="endCallBtn" maxWidth="Infinity" onAction="#onEndCall"
+                        style="-fx-background-color: #d9534f; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 7;"
+                        text="Завершить" HBox.hgrow="ALWAYS" />
+            </HBox>
+
+
+            <Button fx:id="pushToTalkBtn" maxWidth="Infinity"
+                    onMousePressed="#handlePushStart" onMouseReleased="#handlePushEnd"
+                    style="-fx-background-color: #999999; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 7;"
+                    text="Зажмите для разговора" disable="true" />
+
+            <Separator />
+
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="В сети (LAN)" />
+            <ListView fx:id="peersListView" prefHeight="130" style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0;" />
+            <Button fx:id="callSelectedBtn" maxWidth="Infinity" onAction="#onCallSelected"
+                    style="-fx-background-color: #5cb85c; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 7;"
+                    text="Позвонить выбранному" wrapText="true" />
+        </VBox>
+
+        <!-- Правая часть: лог -->
+        <VBox spacing="8" style="-fx-padding: 16;" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Лог" />
+            <TextArea fx:id="logArea" editable="false"
+                      style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-font-family: monospace; -fx-font-size: 12;"
+                      VBox.vgrow="ALWAYS" />
+        </VBox>
+    </HBox>
+</VBox>
